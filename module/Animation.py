@@ -49,6 +49,9 @@ class Animation:
             for x in range(column):
                 self.__sprites.append(self.__extract_sprite(sprite, x, y))
 
+        if exceed_number > 0:
+            self.__sprites[::-exceed_number]
+
     def __extract_sprite(self, sprite, src_x, src_y, flip=False):
         image = pygame.Surface(
             (self.__output_width, self.__output_height), pygame.SRCALPHA
