@@ -1,1 +1,4 @@
-/venv
+/module/__pycache__
+/Assets/
+/venv/
+todolist.txt
