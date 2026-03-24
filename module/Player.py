@@ -1,21 +1,32 @@
+from pathlib import Path
+
 import pygame
 
+from module.Animation import Animation
 
-class Player(pygame.sprite.Sprite):
-    def __init__(self) -> None:
-        self.is_occupied = False
-        self.is_mask_on = False
-        self.is_light_off = False
-        self.is_door_close = False
 
-    def toggle_light(self):
-        self.is_light_off = not self.is_light_off
+class Player:
+    def __init__(self, screen) -> None:
+        self.previous_tick = pygame.time.get_ticks()
+        self.state = "idle"
 
-    def toggle_door(self):
-        self.is_door_close = not self.is_door_close
+        self.screen = screen
+        self.centerx = screen.get_rect().centerx
+        self.centery = screen.get_rect().centery
 
-    def toggle_mask(self):
-        self.is_mask_on = not self.is_mask_on
+        mask_path = Path.cwd() / "Assets" / "Player" / "Mask.png"
+        self.mask_animation = Animation(mask_path)
+        self.mask_animation.set_sprites_frame(256, 256).set_output(
+            1300, 1300
+        ).load_sprite(1, 1)
 
-    def dead(self):
-        pass
+    def _receive_event(self, event):
+        if event:
+            self.state = "mask on"
+            return
+
+        self.state = "idle"
+
+    def draw(self):
+        if self.state == "mask on":
+            self.mask_animation.draw_sprite(self.screen, 0, 0, True)

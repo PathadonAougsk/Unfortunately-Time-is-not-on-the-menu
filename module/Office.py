@@ -4,53 +4,98 @@ import pygame
 
 from module.Animation import Animation
 
-ERROR_PINK = (255, 0, 220)
-
 
 class Office:
-    def __init__(self) -> None:
-        self.images = {}
+    def __init__(self, screen) -> None:
+        self.screen = screen
+        self._state = 0
 
-        door_path = Path.cwd() / "Assets" / "Office" / "Door_closing_sprite.png"
+        front_side = Path.cwd() / "Assets" / "Office" / "front_side.png"
+        back_side = Path.cwd() / "Assets" / "Office" / "back_side.png"
+        door_animation = Path.cwd() / "Assets" / "Office" / "door_animation.png"
 
-        self.last_update = pygame.time.get_ticks()
-        self.door = Door(door_path, 3, 5)
+        self.front_side = (
+            Animation(front_side)
+            .set_sprites_frame(256, 256)
+            .set_output(256 * 3, 256 * 3)
+        )
+        self.front_side.load_sprite(1, 1)
 
-        self.last_tick = pygame.time.get_ticks()
+        self.back_side = (
+            Animation(back_side)
+            .set_sprites_frame(256, 256)
+            .set_output(256 * 3, 256 * 3)
+        )
+        self.back_side.load_sprite(1, 6, gap_px=2)
 
-        self.previous_tick = pygame.time.get_ticks()
+        self.door = (
+            Animation(door_animation)
+            .set_sprites_frame(256, 256)
+            .set_output(256 * 3, 256 * 3)
+        )
+        self.door.load_sprite(1, 10, gap_px=2)
 
-    def draw_office(self, screen, key="normal"):
-        self.door.draw(screen, 0, 150)
+        self.door_tick = pygame.time.get_ticks()
+        self.back_tick = pygame.time.get_ticks()
 
-    def toggle_door(self):
-        self.door.toggle_animation = True
+        self.door_animating = False
+        self.back_animating = False
 
+        self.door_reverse = False
+        self.back_reverse = False
 
-class Door:
-    def __init__(self, path: Path, row: int, column: int, reverse=False) -> None:
-        self.sprite = pygame.image.load(path)
-        self.sprites = []
+    def update_behavior(self):
+        if self._state == 0:
+            self.front_side.draw_sprite(self.screen, 0, 0, True)
+            self.__run_door_animation(delay=100)
 
-        self.animation = Animation(path).set_output(64, 64).set_scale(5)
-        self.animation.load_sprite(3, 4)
+            self.door.draw_sprite(self.screen, 0, 0, True)
 
-        self.toggle_animation = False
-        self.closing_door_button = pygame.Rect(0, 0, 30, 40)
+        elif self._state == 1:
+            self.__run_back_animation(delay=100)
+            self.back_side.draw_sprite(self.screen, 0, 0, True)
 
-        self.previous_tick = pygame.time.get_ticks()
-        self.reverse = False
+    def __run_door_animation(self, delay=100):
+        if not self.door_animating:
+            return
 
-    def draw(self, screen, x, y):
-        self.animation.draw_sprite(screen, x, y)
+        current_tick = pygame.time.get_ticks()
 
-        if self.toggle_animation:
-            current_tick = pygame.time.get_ticks()
+        if current_tick - self.door_tick > delay:
+            self.door_tick = current_tick
 
-            if current_tick - self.previous_tick > 100:
-                self.previous_tick = current_tick
-                fininshed = self.animation.animate(self.reverse)
+            finished = self.door.animate(reverse=self.door_reverse)
 
-                if fininshed:
-                    self.toggle_animation = False
-                    self.reverse = not self.reverse
+            if finished:
+                self.door_animating = False
+
+    def __run_back_animation(self, delay=100):
+        if not self.back_animating:
+            return
+
+        current_tick = pygame.time.get_ticks()
+
+        if current_tick - self.back_tick > delay:
+            self.back_tick = current_tick
+
+            finished = self.back_side.animate(reverse=self.back_reverse)
+
+            if finished:
+                if self.back_reverse:
+                    self._state = 0
+                    self.back_reverse = False
+                self.back_animating = False
+
+    def _receive_event(self, type_of_event):
+        if type_of_event == "Door" and not self.door_animating:
+            self.door_reverse = not self.door_reverse
+            self.door_animating = True
+
+        elif type_of_event == "Turn Right":
+            self._state = 1
+            self.back_side.frame = 0
+            self.back_animating = True
+
+        elif type_of_event == "Turn Left":
+            self.back_animating = True
+            self.back_reverse = True
