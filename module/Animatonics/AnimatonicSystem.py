@@ -1,10 +1,7 @@
-from pathlib import Path
-
 import pygame
 from numpy.random.mtrand import randint
 
 from module.Animation import Animation
-from module.Player import Player
 
 
 class AnimatonicSystem:
@@ -22,21 +19,14 @@ class AnimatonicSystem:
         self.__event_handler = event_handler
         self.screen = screen
 
-    @classmethod
-    def attack_avaiable(cls):
-        for animatonic in cls.All_Animatonics:
-            if animatonic._currentlyAttack:
-                return False
-        return True
-
     def try_to_move(self):
         if self._frozen:
-            return
+            return False
 
         if randint(0, 10) >= 100 - self._aggro:
             self._state += 1
             self._aggro = 0
-            return
+            return True
 
         self._aggro += self.aggro_rate
 
@@ -46,26 +36,28 @@ class AnimatonicSystem:
     def unfreeze(self):
         self._frozen = False
 
-    def update_behavior(self):
-        pass
-
     def __prepare_attack(self):
         pass
 
-    def _attack(self):
-        event_type, data = self.__event_handler.try_kill_player(self.__class__.__name__)
-        if not data:
-            self._state = -1
-            return
+    @classmethod
+    def _attack(cls):
+        return ("Attack", cls.__name__)
 
-        self._state = -2
+    @classmethod
+    def _reset(cls):
+        return ("Reset", cls.__name__)
 
-    def _receive_event(self, type_of_event, data):
+    def _run_animation(self, animation, func, tick_attr, delay=200, reverse=False):
+        current_tick = pygame.time.get_ticks()
+        last_tick = getattr(self, tick_attr)
+
+        if current_tick - last_tick > delay:
+            setattr(self, tick_attr, current_tick)
+
+            finished = animation.animate(reverse=reverse)
+
+            if finished:
+                return func()
+
+    def _gameover(self):
         pass
-
-    def _jumpscare(self):
-        pass
-
-    def _reset(self):
-        self.unfreeze()
-        self._state = 0

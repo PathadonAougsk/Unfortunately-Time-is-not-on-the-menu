@@ -3,7 +3,7 @@ import random
 import pygame
 
 
-class MiniGame:
+class MiniGameLogic:
     def __init__(self, screen) -> None:
         self.screen = screen
         self.screen_rect = self.screen.get_rect()
@@ -66,30 +66,16 @@ class MiniGame:
             self.current_color = self.red
 
 
-if __name__ == "__main__":
-    pygame.init()
-    screen = pygame.display.set_mode((400, 400))
+class MiniGame:
+    def __init__(self) -> None:
+        self.surface = pygame.Surface((215, 170))
+        self.surface_rect = self.surface.get_rect(topleft=(290, 100))
+        self.minigame = MiniGameLogic(self.surface)
 
-    minigame = MiniGame(screen)
-    clock = pygame.time.Clock()
-    running = True
+    def behavior(self, condition: bool):
+        if condition:
+            self.minigame.Update()
 
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_d:
-                    minigame.Swipe_right()
-                if event.key == pygame.K_a:
-                    minigame.Swipe_left()
-
-        screen.fill("purple")
-
-        minigame.Update()
-        print(minigame.score)
-        pygame.display.flip()
-        clock.tick(60)
-
-    pygame.quit()
+    def render(self, screen):
+        screen.blit(self.surface, self.surface_rect)
+        self.surface.fill((0, 0, 0))

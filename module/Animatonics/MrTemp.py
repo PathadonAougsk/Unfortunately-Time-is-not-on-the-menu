@@ -5,29 +5,27 @@ from module.Animatonics.AnimatonicSystem import AnimatonicSystem
 from module.Player import Player
 
 
-class MrHappy(AnimatonicSystem):
+class MrTemp(AnimatonicSystem):
     def __init__(self, screen, aggro_rate, target: Player, eventhandler, x, y) -> None:
         super().__init__(screen, target, eventhandler, aggro_rate)
 
-        self.name = "MrHappy"
+        self.name = "MrTemp"
         self.mode = "idle"
 
-        Appear_path = Path.cwd() / "Assets" / "MrHappy" / "Prepare.png"
-        Jump_scare_path = Path.cwd() / "Assets" / "MrHappy" / "Jump_scare.png"
+        Appear_path = Path.cwd() / "Assets" / "TempCharacter" / "Appear.png"
+        Jump_scare_path = Path.cwd() / "Assets" / "TempCharacter" / "Jump_scare.png"
 
         self.prep_animation = (
-            Animation(Appear_path)
-            .set_sprites_frame(256, 256)
-            .set_output(256 * 3, 256 * 3)
+            Animation(Appear_path).set_sprites_frame(128, 128).set_output(300, 300)
         )
-        self.prep_animation.load_sprite(1, 8, gap_px=2)
+        self.prep_animation.load_sprite(1, 7)
 
         self.jump_animation = (
             Animation(Jump_scare_path)
-            .set_sprites_frame(256, 256)
-            .set_output(256 * 3, 256 * 3)
+            .set_sprites_frame(128, 128)
+            .set_output(2000, 2000)
         )
-        self.jump_animation.load_sprite(1, 5, gap_px=2)
+        self.jump_animation.load_sprite(1, 8)
 
         self.current_animation = self.prep_animation
         self._max_state = 3
@@ -36,15 +34,12 @@ class MrHappy(AnimatonicSystem):
         self._jump_tick = 0
         self._reset_tick = 0
 
-    def interrupt(self):
-        self.current_animation = self.prep_animation
-        self.current_animation.frame = 0
-
     def behavior(self, state):
         self.current_animation = self.prep_animation
 
         if self.mode == "jumpscare":
             self.current_animation = self.jump_animation
+            self.draw()
             return self._run_animation(
                 self.jump_animation, self._gameover, "_jump_tick", delay=100
             )
@@ -66,4 +61,4 @@ class MrHappy(AnimatonicSystem):
         self.mode = "jumpscare"
 
     def draw(self):
-        self.current_animation.draw_sprite(self.screen, 0, 0, center=True)
+        self.current_animation.draw_sprite(self.screen, 120, 0, True)
