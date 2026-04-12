@@ -74,9 +74,21 @@ class App:
                         if event.key == pygame.K_w:
                             self.event_handler.toggle_light()
 
-            self.screen.fill((0, 0, 0))
+                elif self.state == "reset":
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_SPACE:
+                            self.event_handler.is_game_over = False
+                            self.state = "title"
 
-            if self.state == "title":
+            self.screen.fill((0, 0, 0))
+            print(self.state, self.event_handler.is_game_over)
+
+            if self.event_handler.is_game_over:
+                self.state = "reset"
+                self.animatonic_controller.reset_animatonic()
+                self.office_controller.reset_office()
+
+            elif self.state == "title":
                 self.title_screen.process()
                 self.title_screen.render()
                 if self.title_screen.done:

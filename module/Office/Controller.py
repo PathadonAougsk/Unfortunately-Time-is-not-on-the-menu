@@ -39,3 +39,8 @@ class Office_controller:
         if self.event_handler.is_sumbit:
             self.minigame.logic.Swipe_right()
             self.event_handler.sumbit_order()
+
+    def reset_office(self):
+        self.minigame.logic.score = 0
+        self.state = "Office"
+        self.door._run_animation(self.event_handler.is_door_close)

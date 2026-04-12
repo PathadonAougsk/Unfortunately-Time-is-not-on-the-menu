@@ -3,7 +3,6 @@ from module.EventHandler import EventHandler
 
 class AnimatonicController:
     def __init__(self, animatonics: dict, event_handler: EventHandler) -> None:
-
         self.animatonics = animatonics
         self.event_handler = event_handler
 
@@ -84,3 +83,10 @@ class AnimatonicController:
                 return False
 
         return True
+
+    def reset_animatonic(self):
+        for name, animatonic in self.animatonics.items():
+            animatonic.reset_game_over()
+
+        self.internal_process(["Reset", "MrTemp"])
+        self.internal_process(["Reset", "MrHappy"])

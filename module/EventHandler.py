@@ -7,6 +7,7 @@ class EventHandler:
         self.is_sumbit = False
 
         self._is_facing_office = True
+        self.is_game_over = False
 
     def toggle_mask(self):
         self.is_mask_on = not self.is_mask_on
@@ -48,3 +49,14 @@ class EventHandler:
                 return True
 
         return False
+
+    def gameover(self):
+        if self.is_game_over:
+            return
+
+        self.is_game_over = True
+
+        self.is_door_close = False
+        self.is_mask_on = False
+        self.is_pc_on = False
+        self._is_facing_office = False

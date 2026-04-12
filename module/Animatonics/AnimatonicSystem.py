@@ -1,12 +1,8 @@
 import pygame
 from numpy.random.mtrand import randint
 
-from module.Animation import Animation
-
 
 class AnimatonicSystem:
-    All_Animatonics = []
-
     def __init__(self, screen, target, event_handler, aggro_rate) -> None:
         self.target = target
         self.aggro_rate = aggro_rate
@@ -29,6 +25,10 @@ class AnimatonicSystem:
             return True
 
         self._aggro += self.aggro_rate
+
+    def reset_game_over(self):
+        self._aggro = 0
+        self._state = 0
 
     def freeze(self):
         self._frozen = True
@@ -57,4 +57,4 @@ class AnimatonicSystem:
                 return func()
 
     def _gameover(self):
-        pass
+        self.__event_handler.gameover()
