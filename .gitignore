@@ -1,4 +1,2 @@
-/module/__pycache__
-# /Assets/
+*__pycache__
 /.venv/
-todolist.txt

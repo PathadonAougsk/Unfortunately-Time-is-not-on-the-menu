@@ -10,7 +10,6 @@ class AnimatonicController:
         self.states = {name: 0 for name in animatonics}
 
     def process(self):
-        print(self.states.keys(), self.states.values())
         self.process_movement()
         self.process_behaviour()
 
