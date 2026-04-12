@@ -62,8 +62,15 @@ class MrHappy(AnimatonicSystem):
         self.mode = "idle"
         return ("Idle", self.name)
 
+    def reset_game_over(self):
+        super().reset_game_over()
+        self.prep_animation.frame = 0
+        self.jump_animation.frame = 0
+
     def jumpscare(self):
         self.mode = "jumpscare"
 
     def draw(self):
+        if self.mode == "idle":
+            return
         self.current_animation.draw_sprite(self.screen, 0, 0, center=True)

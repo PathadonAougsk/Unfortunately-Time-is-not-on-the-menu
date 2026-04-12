@@ -15,20 +15,23 @@ class AnimatonicSystem:
         self.__event_handler = event_handler
         self.screen = screen
 
-    def try_to_move(self):
+    def try_to_move(self, score=0):
         if self._frozen:
             return False
+
+        effective_rate = self.aggro_rate * (1.1 ** (score // 5))
 
         if randint(0, 10) >= 100 - self._aggro:
             self._state += 1
             self._aggro = 0
             return True
 
-        self._aggro += self.aggro_rate
+        self._aggro += effective_rate
 
     def reset_game_over(self):
         self._aggro = 0
         self._state = 0
+        self.mode = "idle"
 
     def freeze(self):
         self._frozen = True

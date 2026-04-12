@@ -17,7 +17,7 @@ class AnimatonicController:
             if not self.is_valid_to_move(name) and animatonic.mode == "idle":
                 continue
 
-            if animatonic.try_to_move():
+            if animatonic.try_to_move(self.event_handler.score):
                 self.states[name] += 1
 
     def process_behaviour(self):
@@ -28,8 +28,18 @@ class AnimatonicController:
             if event:
                 self.internal_process(event)
 
+    def render_below_office(self):
+        if "MrBall" in self.animatonics:
+            animatonic = self.animatonics["MrBall"]
+            if animatonic.mode in ["prep", "reset"]:
+                animatonic.draw()
+
     def render(self):
         for name, animatonic in self.animatonics.items():
+            if name == "MrBall":
+                if animatonic.mode == "jumpscare":
+                    animatonic.draw()
+                continue
             if not self.is_valid_to_behaviour(name) and animatonic.mode in [
                 "prep",
                 "reset",
@@ -78,7 +88,7 @@ class AnimatonicController:
                     self.force_character_state(name, 0)
                     self.animatonics[name].interrupt()
                 return False
-        if name == "MrTemp":
+        else:
             if not self.event_handler._is_facing_office:
                 return False
 
@@ -90,3 +100,4 @@ class AnimatonicController:
 
         self.internal_process(["Reset", "MrTemp"])
         self.internal_process(["Reset", "MrHappy"])
+        self.internal_process(["Reset", "MrBall"])

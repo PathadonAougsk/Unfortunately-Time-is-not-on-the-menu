@@ -11,12 +11,20 @@ class StaticOverlay:
         self._noise_surf = self._make_noise(width, height)
         self._scanlines = self._make_scanlines(width, height)
         self._vignette = self._make_vignette(width, height)
+        self._last_update = 0
+        self._alpha = 8
+        self._ox = 0
+        self._oy = 0
 
     def draw(self, surface: pygame.Surface) -> None:
-        self._noise_surf.set_alpha(random.randint(6, 18))
-        ox = random.randint(-2, 2)
-        oy = random.randint(-2, 2)
-        surface.blit(self._noise_surf, (ox, oy))
+        now = pygame.time.get_ticks()
+        if now - self._last_update > 80:
+            self._last_update = now
+            self._alpha = random.randint(4, 10)
+            self._ox = random.randint(-1, 1)
+            self._oy = random.randint(-1, 1)
+        self._noise_surf.set_alpha(self._alpha)
+        surface.blit(self._noise_surf, (self._ox, self._oy))
         surface.blit(self._scanlines, (0, 0))
         surface.blit(self._vignette, (0, 0))
 

@@ -3,13 +3,16 @@ import sys
 import pygame
 
 from module.Animatonics.Controller import AnimatonicController
+from module.Animatonics.MrBall import MrBall
 from module.Animatonics.MrHappy import MrHappy
 from module.Animatonics.MrTemp import MrTemp
 from module.EventHandler import EventHandler
+from module.GameOverScreen import GameOverScreen
 from module.Office.Controller import Office_controller
 from module.Player import Player
 from module.StaticOverlay import StaticOverlay
 from module.TitleScreen import TitleScreen
+from module.WinScreen import WinScreen
 
 ERROR_PINK = (255, 0, 220)
 
@@ -17,6 +20,7 @@ ERROR_PINK = (255, 0, 220)
 class App:
     def __init__(self) -> None:
         pygame.init()
+        pygame.mixer.init()
         self.screen = pygame.display.set_mode((790, 790))
         self.screen_rect = self.screen.get_rect()
         self.clock = pygame.time.Clock()
@@ -27,18 +31,19 @@ class App:
     def Awake(self):
         self.event_handler = EventHandler()
         self.player = Player(self.screen)
-        tempcharacter = MrTemp(self.screen, 1, self.player, self.event_handler, 0, 0)
-        mrhappy = MrHappy(self.screen, 0.5, self.player, self.event_handler, 0, 0)
-        animatonics = {
-            "MrTemp": tempcharacter,
-            "MrHappy": mrhappy,
-        }
+        tempcharacter = MrTemp(self.screen, 0.2, self.player, self.event_handler, 0, 0)
+        mrhappy = MrHappy(self.screen, 0.2, self.player, self.event_handler, 0, 0)
+        mrball = MrBall(self.screen, 0.2, self.player, self.event_handler, 0, 0)
+        animatonics = {"MrTemp": tempcharacter, "MrHappy": mrhappy, "MrBall": mrball}
         self.animatonic_controller = AnimatonicController(
             animatonics, self.event_handler
         )
         self.office_controller = Office_controller(self.screen, self.event_handler)
         self.title_screen = TitleScreen(self.screen)
+        self.gameover_screen = GameOverScreen(self.screen)
+        self.win_screen = WinScreen(self.screen)
         self.state = "title"
+        self.score_font = pygame.font.SysFont(None, 36)
         self.pc_button = pygame.Rect(250, 355, 50, 50)
         self.door_button = pygame.Rect(230, 400, 40, 40)
         self.turn_right = pygame.Rect(720, 25, 50, 740)
@@ -71,28 +76,63 @@ class App:
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_SPACE:
                             self.event_handler.toggle_mask()
-                        if event.key == pygame.K_w:
-                            self.event_handler.toggle_light()
 
-                elif self.state == "reset":
-                    if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_SPACE:
-                            self.event_handler.is_game_over = False
-                            self.state = "title"
+                elif self.state == "gameover":
+                    self.gameover_screen.handle_event(event)
+
+                elif self.state == "win":
+                    self.win_screen.handle_event(event)
 
             self.screen.fill((0, 0, 0))
-            print(self.state, self.event_handler.is_game_over)
 
-            if self.event_handler.is_game_over:
-                self.state = "reset"
-                self.animatonic_controller.reset_animatonic()
-                self.office_controller.reset_office()
+            if self.state == "game":
+                if self.event_handler.is_game_over:
+                    self.state = "gameover"
+                    self.animatonic_controller.reset_animatonic()
+                    self.office_controller.reset_office()
+                    self.gameover_screen.reset()
+                elif self.event_handler.score >= 100:
+                    self.state = "win"
+                    self.animatonic_controller.reset_animatonic()
+                    self.office_controller.reset_office()
+                    self.win_screen.reset()
+
+            if self.state == "win":
+                self.win_screen.process()
+                self.win_screen.render()
+                if self.win_screen.done:
+                    self.event_handler.go_to_menu()
+                    if self.win_screen.chosen == "Play Again":
+                        self.state = "game"
+                    else:
+                        self.state = "title"
+                        self.title_screen.done = False
+                        self.title_screen._phase = "attract"
+
+            elif self.state == "gameover":
+                self.gameover_screen.process()
+                self.gameover_screen.render()
+                if self.gameover_screen.done:
+                    self.event_handler.go_to_menu()
+                    if self.gameover_screen.chosen == "Try Again":
+                        self.state = "game"
+                    else:
+                        self.state = "title"
+                        self.title_screen.done = False
+                        self.title_screen._phase = "attract"
 
             elif self.state == "title":
                 self.title_screen.process()
                 self.title_screen.render()
                 if self.title_screen.done:
                     self.state = "game"
+                    volumes = self.title_screen.volumes
+                    for (
+                        name,
+                        animatonic,
+                    ) in self.animatonic_controller.animatonics.items():
+                        if name in volumes and hasattr(animatonic, "_appear_sound"):
+                            animatonic._appear_sound.set_volume(volumes[name])
 
             elif self.state == "game":
                 if self.turn_right.collidepoint(pos):
@@ -101,11 +141,21 @@ class App:
                     self.event_handler.turn_to_office()
 
                 self.office_controller.process()
-                self.office_controller.render()
                 self.animatonic_controller.process()
+                self.animatonic_controller.render_below_office()
+                self.office_controller.render()
                 self.animatonic_controller.render()
-                self.player.draw()
+
+                self.player.toggle_mask(self.event_handler.is_mask_on)
+                self.player.render()
                 self.static_overlay.draw(self.screen)
+                score_text = self.score_font.render(
+                    f"{self.event_handler.score}/100", True, (255, 255, 255)
+                )
+                self.screen.blit(
+                    score_text,
+                    (self.screen_rect.centerx - score_text.get_width() // 2, 30),
+                )
 
             pygame.display.flip()
             self.clock.tick(60)

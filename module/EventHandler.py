@@ -1,13 +1,25 @@
+import pygame
+
+
 class EventHandler:
     def __init__(self) -> None:
         self.is_mask_on = False
-        self.is_light_on = False
         self.is_pc_on = False
         self.is_door_close = False
         self.is_sumbit = False
 
         self._is_facing_office = True
         self.is_game_over = False
+        self.is_reset = False
+        self.score = 0
+
+        self._door_close_start = 0
+        self._door_locked_until = 0
+        self._door_max_close = 5000  # ms before lockout
+
+    @property
+    def is_door_locked(self):
+        return pygame.time.get_ticks() < self._door_locked_until
 
     def toggle_mask(self):
         self.is_mask_on = not self.is_mask_on
@@ -18,8 +30,23 @@ class EventHandler:
     def toggle_door(self):
         if not self._is_facing_office:
             return
+        if self.is_door_locked:
+            return
 
-        self.is_door_close = not self.is_door_close
+        if self.is_door_close:
+            self.is_door_close = False
+            self._door_close_start = 0
+        else:
+            self.is_door_close = True
+            self._door_close_start = pygame.time.get_ticks()
+
+    def update_door(self):
+        if not self.is_door_close:
+            return
+        if pygame.time.get_ticks() - self._door_close_start > self._door_max_close:
+            self.is_door_close = False
+            self._door_close_start = 0
+            self._door_locked_until = pygame.time.get_ticks() + 10000
 
     def toggle_pc(self):
         if self._is_facing_office:
@@ -45,7 +72,11 @@ class EventHandler:
                 return True
 
         if animatonic_name == "MrTemp":
-            if not self.is_light_on:
+            if not self.is_mask_on:
+                return True
+
+        if animatonic_name == "MrBall":
+            if not self.is_door_close:
                 return True
 
         return False
@@ -55,8 +86,16 @@ class EventHandler:
             return
 
         self.is_game_over = True
+        self.is_reset = True
 
-        self.is_door_close = False
+    def go_to_menu(self):
+        self.is_game_over = False
+        self.is_reset = False
         self.is_mask_on = False
+        self.is_light_on = False
         self.is_pc_on = False
-        self._is_facing_office = False
+        self.is_door_close = False
+        self._door_close_start = 0
+        self._door_locked_until = 0
+        self._is_facing_office = True
+        self.score = 0

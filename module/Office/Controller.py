@@ -31,6 +31,8 @@ class Office_controller:
             self.minigame.render(self.screen)
 
     def process(self):
+        self.event_handler.update_door()
+        self.event_handler.score = self.minigame.logic.score
         if self.event_handler._is_facing_office:
             self.state = "Office"
         else:

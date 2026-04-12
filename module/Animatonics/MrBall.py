@@ -7,27 +7,30 @@ from module.Animatonics.AnimatonicSystem import AnimatonicSystem
 from module.Player import Player
 
 
-class MrTemp(AnimatonicSystem):
+class MrBall(AnimatonicSystem):
     def __init__(self, screen, aggro_rate, target: Player, eventhandler, x, y) -> None:
         super().__init__(screen, target, eventhandler, aggro_rate)
 
-        self.name = "MrTemp"
+        self.name = "MrBall"
         self.mode = "idle"
 
-        Appear_path = Path.cwd() / "Assets" / "MrTemp" / "Appear.png"
-        Jump_scare_path = Path.cwd() / "Assets" / "MrTemp" / "Jump_scare.png"
+        Appear_path = Path.cwd() / "Assets" / "MrBall" / "Appear.png"
+        Jump_scare_path = Path.cwd() / "Assets" / "MrBall" / "Jump_scare.png"
 
         self.prep_animation = (
-            Animation(Appear_path).set_sprites_frame(128, 128).set_output(300, 300)
+            Animation(Appear_path)
+            .set_sprites_frame(256, 256)
+            .set_output(256 * 3, 256 * 3)
         )
-        self.prep_animation.load_sprite(1, 7)
+
+        self.prep_animation.load_sprite(2, 8, gap_px=2, exceed_number=4)
 
         self.jump_animation = (
             Animation(Jump_scare_path)
-            .set_sprites_frame(128, 128)
+            .set_sprites_frame(256, 256)
             .set_output(2000, 2000)
         )
-        self.jump_animation.load_sprite(1, 8)
+        self.jump_animation.load_sprite(1, 7)
 
         self.current_animation = self.prep_animation
         self._max_state = 3
@@ -36,7 +39,7 @@ class MrTemp(AnimatonicSystem):
         self._jump_tick = 0
         self._reset_tick = 0
 
-        appear_sound_path = Path.cwd() / "Assets" / "MrTemp" / "Appear.mp3"
+        appear_sound_path = Path.cwd() / "Assets" / "MrBall" / "Appear.mp3"
         self._appear_sound = pygame.mixer.Sound(appear_sound_path)
 
     def behavior(self, state, should_appear=True):
@@ -74,4 +77,4 @@ class MrTemp(AnimatonicSystem):
         self.mode = "jumpscare"
 
     def draw(self):
-        self.current_animation.draw_sprite(self.screen, 120, 0, True)
+        self.current_animation.draw_sprite(self.screen, -5, 0, True)
