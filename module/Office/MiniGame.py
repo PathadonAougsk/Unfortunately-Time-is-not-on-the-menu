@@ -70,11 +70,11 @@ class MiniGame:
     def __init__(self) -> None:
         self.surface = pygame.Surface((215, 170))
         self.surface_rect = self.surface.get_rect(topleft=(290, 100))
-        self.minigame = MiniGameLogic(self.surface)
+        self.logic = MiniGameLogic(self.surface)
 
     def behavior(self, condition: bool):
         if condition:
-            self.minigame.Update()
+            self.logic.Update()
 
     def render(self, screen):
         screen.blit(self.surface, self.surface_rect)

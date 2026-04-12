@@ -4,6 +4,7 @@ class EventHandler:
         self.is_light_on = False
         self.is_pc_on = False
         self.is_door_close = False
+        self.is_sumbit = False
 
         self._is_facing_office = True
 
@@ -30,6 +31,9 @@ class EventHandler:
 
     def turn_to_backroom(self):
         self._is_facing_office = False
+
+    def sumbit_order(self):
+        self.is_sumbit = not self.is_sumbit
 
     def finnish_turn(self):
         self._is_facing_office = not self._is_facing_office

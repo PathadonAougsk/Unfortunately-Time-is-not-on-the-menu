@@ -36,9 +36,6 @@ class AnimatonicSystem:
     def unfreeze(self):
         self._frozen = False
 
-    def __prepare_attack(self):
-        pass
-
     @classmethod
     def _attack(cls):
         return ("Attack", cls.__name__)

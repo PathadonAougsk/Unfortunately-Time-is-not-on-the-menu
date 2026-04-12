@@ -10,23 +10,32 @@ class AnimatonicController:
         self.states = {name: 0 for name in animatonics}
 
     def process(self):
-        print("MrHappy", self.states["MrHappy"])
-        print("MrTemp", self.states["MrTemp"])
+        print(self.states.keys(), self.states.values())
+        self.process_movement()
+        self.process_behaviour()
 
+    def process_movement(self):
         for name, animatonic in self.animatonics.items():
-            if not self.is_valid(name) and animatonic.mode == "idle":
+            if not self.is_valid_to_move(name) and animatonic.mode == "idle":
                 continue
 
             if animatonic.try_to_move():
                 self.states[name] += 1
 
+    def process_behaviour(self):
+        for name, animatonic in self.animatonics.items():
+            if not self.is_valid_to_move(name) and animatonic.mode == "idle":
+                continue
             event = animatonic.behavior(self.states[name])
             if event:
                 self.internal_process(event)
 
     def render(self):
         for name, animatonic in self.animatonics.items():
-            if not self.is_valid(name) and animatonic.mode == "prep":
+            if not self.is_valid_to_behaviour(name) and animatonic.mode in [
+                "prep",
+                "reset",
+            ]:
                 continue
             animatonic.draw()
 
@@ -56,7 +65,13 @@ class AnimatonicController:
 
             self.force_character_state(character_name, 0)
 
-    def is_valid(self, name):
+    def is_valid_to_move(self, name):
+        if name == "MrHappy":
+            if not self.event_handler.is_pc_on or self.event_handler._is_facing_office:
+                return False
+        return True
+
+    def is_valid_to_behaviour(self, name):
         if name == "MrHappy":
             if self.event_handler._is_facing_office:
                 return False
@@ -65,11 +80,8 @@ class AnimatonicController:
                     self.force_character_state(name, 0)
                     self.animatonics[name].interrupt()
                 return False
-            return True
-
         if name == "MrTemp":
             if not self.event_handler._is_facing_office:
                 return False
-            return True
 
         return True

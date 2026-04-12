@@ -35,3 +35,7 @@ class Office_controller:
             self.state = "Office"
         else:
             self.state = "Backroom"
+
+        if self.event_handler.is_sumbit:
+            self.minigame.logic.Swipe_right()
+            self.event_handler.sumbit_order()

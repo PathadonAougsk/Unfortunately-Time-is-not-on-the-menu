@@ -61,8 +61,7 @@ class App:
                     elif self.pc_button.collidepoint(pos):
                         self.event_handler.toggle_pc()
                     elif self.center_button.collidepoint(pos):
-                        pass
-                        # self.event_handler.summbit_order()
+                        self.event_handler.sumbit_order()
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:

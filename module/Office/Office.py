@@ -1,7 +1,5 @@
 from pathlib import Path
 
-import pygame
-
 from module.Animation import Animation
 
 

@@ -34,7 +34,7 @@ class MrTemp(AnimatonicSystem):
         self._jump_tick = 0
         self._reset_tick = 0
 
-    def behavior(self, state):
+    def behavior(self, state, should_appear=True):
         self.current_animation = self.prep_animation
 
         if self.mode == "jumpscare":
