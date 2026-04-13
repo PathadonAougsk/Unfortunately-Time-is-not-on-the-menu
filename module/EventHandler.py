@@ -85,6 +85,7 @@ class EventHandler:
         if self.is_game_over:
             return
 
+        self.is_mask_on = False
         self.is_game_over = True
         self.is_reset = True
 

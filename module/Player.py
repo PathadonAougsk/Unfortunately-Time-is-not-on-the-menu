@@ -22,7 +22,7 @@ class Player:
         self.mask_tick = 0
 
     def toggle_mask(self, result):
-        self.is_mask_on = not result
+        self.is_mask_on = result
 
     def render(self):
         self._run_animation(not self.is_mask_on)

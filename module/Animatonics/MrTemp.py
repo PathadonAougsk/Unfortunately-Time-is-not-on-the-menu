@@ -54,7 +54,7 @@ class MrTemp(AnimatonicSystem):
                 self._appear_sound.play()
             self.mode = "prep"
             self.freeze()
-            return self._run_animation(self.prep_animation, self._attack, "_prep_tick")
+            return self._run_animation(self.prep_animation, self._attack, "_prep_tick", delay=400)
 
         elif state == -1:
             self.mode = "reset"
