@@ -7,8 +7,8 @@ import pygame
 
 from module.StaticOverlay import StaticOverlay
 
-TITLE_TEXT = "TILL 6 AM"
-SUBTITLE = "A night to survive"
+TITLE_TEXT = "Unfortunately"
+SUBTITLE = "Time is not on the menu"
 MENU_ITEMS = ["New Night", "Statistic", "Quit"]
 
 COL_BG = (0, 0, 0)
@@ -70,7 +70,9 @@ class TitleScreen:
         self.volumes = {name: 1.0 for name in SLIDER_CHARS}
         self._slider_bars: dict[str, pygame.Rect] = {}
         self._dragging: str | None = None
-        self._preview_sounds: dict[str, pygame.mixer.Sound] = self._load_preview_sounds()
+        self._preview_sounds: dict[str, pygame.mixer.Sound] = (
+            self._load_preview_sounds()
+        )
 
     def handle_event(self, event: pygame.event.Event) -> None:
         if self.done:
@@ -145,8 +147,6 @@ class TitleScreen:
         if label == "Quit":
             pygame.quit()
             sys.exit()
-        elif label == "Statistic":
-            pass
         else:
             self.done = True
 
@@ -223,7 +223,9 @@ class TitleScreen:
         sw, sh = self.sw, self.sh
         label_surf = self.font_hint.render("VOLUME", True, COL_SLIDER_LABEL)
         label_surf.set_alpha(self._menu_alpha)
-        self.screen.blit(label_surf, (sw // 2 - label_surf.get_width() // 2, int(sh * 0.80)))
+        self.screen.blit(
+            label_surf, (sw // 2 - label_surf.get_width() // 2, int(sh * 0.80))
+        )
 
         self._slider_bars = {}
         for i, name in enumerate(SLIDER_CHARS):
@@ -248,17 +250,28 @@ class TitleScreen:
             # Handle
             hx = bar.left + int(bar.w * self.volumes[name])
             handle_col = (*COL_SLIDER_HANDLE, self._menu_alpha)
-            handle_surf = pygame.Surface((SLIDER_HANDLE_R * 2, SLIDER_HANDLE_R * 2), pygame.SRCALPHA)
-            pygame.draw.circle(handle_surf, handle_col, (SLIDER_HANDLE_R, SLIDER_HANDLE_R), SLIDER_HANDLE_R)
+            handle_surf = pygame.Surface(
+                (SLIDER_HANDLE_R * 2, SLIDER_HANDLE_R * 2), pygame.SRCALPHA
+            )
+            pygame.draw.circle(
+                handle_surf,
+                handle_col,
+                (SLIDER_HANDLE_R, SLIDER_HANDLE_R),
+                SLIDER_HANDLE_R,
+            )
             self.screen.blit(handle_surf, (hx - SLIDER_HANDLE_R, y - SLIDER_HANDLE_R))
 
             # Label
             lbl = self.font_hint.render(name, True, COL_SLIDER_LABEL)
             lbl.set_alpha(self._menu_alpha)
-            self.screen.blit(lbl, (bar.left - lbl.get_width() - 10, y - lbl.get_height() // 2))
+            self.screen.blit(
+                lbl, (bar.left - lbl.get_width() - 10, y - lbl.get_height() // 2)
+            )
 
             # Value
-            val_text = self.font_hint.render(f"{int(self.volumes[name] * 100)}%", True, COL_SLIDER_LABEL)
+            val_text = self.font_hint.render(
+                f"{int(self.volumes[name] * 100)}%", True, COL_SLIDER_LABEL
+            )
             val_text.set_alpha(self._menu_alpha)
             self.screen.blit(val_text, (bar.right + 8, y - val_text.get_height() // 2))
 

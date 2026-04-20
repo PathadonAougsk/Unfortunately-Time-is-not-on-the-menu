@@ -29,7 +29,7 @@ class MiniGameLogic:
         self._font_small = pygame.font.SysFont(None, 22)
 
     def _cycle_ms(self):
-        return max(300, 1000 - (self.score // 5) * 60)
+        return max(1000, 3000 - (self.score * 1000) // 30)
 
     def Update(self):
         now = pygame.time.get_ticks()
