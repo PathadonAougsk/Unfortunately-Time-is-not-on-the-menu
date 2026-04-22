@@ -1,5 +1,6 @@
-# Unfortunately Time is not on the menu
+<h1 align="center">Unfortunately-Time-is-not-on-the-menu</h1>
 
+![Alt Text](Assets/Homepage.png)
 ## Project Description
 - Project by: Pathadon Aougsk
 - Game Genre: Point-and-Click Strategy, survival horror
