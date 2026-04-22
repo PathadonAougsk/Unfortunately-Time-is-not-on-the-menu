@@ -192,7 +192,9 @@ class StatisticScreen:
 
         if self._loading:
             msg = self._font_label.render("Loading graphs...", True, COL_DIM)
-            screen.blit(msg, (sw // 2 - msg.get_width() // 2, sh // 2 - msg.get_height() // 2))
+            screen.blit(
+                msg, (sw // 2 - msg.get_width() // 2, sh // 2 - msg.get_height() // 2)
+            )
         elif not self._has_data:
             msg = self._font_label.render(
                 "No data yet — play a round first.", True, COL_TEXT
@@ -318,6 +320,7 @@ class StatisticScreen:
         ax.set_title(
             "Player Reaction Time vs Score", fontsize=14, fontweight="bold", pad=12
         )
+
         ax.set_xlabel("Score", fontsize=11)
         ax.set_ylabel("Reaction Time (s)", fontsize=11)
         ax.grid(axis="y", linestyle="--", alpha=0.5)
