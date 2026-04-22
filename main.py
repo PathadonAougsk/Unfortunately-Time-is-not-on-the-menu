@@ -1,6 +1,7 @@
 import sys
 
 import pygame
+from pygame._sdl2 import video as _sdl2_video
 
 from module.Animatonics.Controller import AnimatonicController
 from module.Animatonics.MrBall import MrBall
@@ -14,10 +15,12 @@ from module.Player import Player
 from module.Recording import Session
 from module.StaticOverlay import StaticOverlay
 from module.StatisticScreen import StatisticScreen
+from module.StatisticWindow import StatisticWindow
 from module.TitleScreen import TitleScreen
 from module.WinScreen import WinScreen
 
 ERROR_PINK = (255, 0, 220)
+_RESTORE_PYGAME = pygame.USEREVENT + 10  # posted by tkinter thread when stats window closes
 
 
 class App:
@@ -69,11 +72,11 @@ class App:
                 if event.type == pygame.QUIT:
                     self.Quit()
 
+                if event.type == _RESTORE_PYGAME:
+                    _sdl2_video.Window.from_display_module().show()
+
                 if self.state == "title":
                     self.title_screen.handle_event(event)
-
-                elif self.state == "statistic":
-                    self.statistic_page.handle_event(event)
 
                 elif self.state == "game":
                     if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -146,29 +149,19 @@ class App:
                         self.title_screen.done = False
                         self.title_screen._phase = "attract"
 
-            elif self.state == "statistic":
-                self.statistic_page.process()
-                self.statistic_page.render()
-                if self.statistic_page.done:
-                    self.statistic_page.reset()
-                    self.screen = pygame.display.set_mode((790, 790))
-                    self.screen_rect = self.screen.get_rect()
-                    self.title_screen.screen = self.screen
-                    self.state = "title"
-                    self.title_screen.done = False
-                    self.title_screen._phase = "menu"
-
             elif self.state == "title":
                 self.title_screen.process()
                 self.title_screen.render()
                 if self.title_screen.done:
                     if self.title_screen.chosen == "Statistic":
                         self.title_screen.done = False
-                        self.screen = pygame.display.set_mode((1100, 790))
-                        self.screen_rect = self.screen.get_rect()
-                        self.statistic_page.screen = self.screen
-                        self.statistic_page.sw = 1100
-                        self.state = "statistic"
+                        self.title_screen.chosen = None
+                        _sdl2_video.Window.from_display_module().hide()
+                        StatisticWindow().open(
+                            on_close=lambda: pygame.event.post(
+                                pygame.event.Event(_RESTORE_PYGAME)
+                            )
+                        )
                     else:
                         self.state = "game"
                         volumes = self.title_screen.volumes
