@@ -56,13 +56,20 @@ python3 main.py
 
 ## Game Features
 
-*Your content here*
+- 3 animatronics — MrTemp, MrBall, and MrHappy, each with a unique attack style and a different counter
+- Minigame — submit or reject orders to earn score, speeds up as score increases
+- Two-room layout — switch between the office and backroom to manage different threats
+- Dynamic difficulty — animatronics get more aggressive as your score goes up
+- Statistics system — tracks every action and encounter and saves them to an Excel file
+- Data visualization — a separate stats window with 5 graphs and tables showing your gameplay data
+- Volume control — adjust each animatronic's sound from the main menu
 
 ---
 
 ## Known Bugs
 
-*Your content here*
+Sometimes MrBall will kill the player even if the door is closed.
+This happens because the AI updates before the player input is processed, so clicking the door on the last frame still counts as open when the attack check runs.
 
 ---
 

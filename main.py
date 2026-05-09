@@ -20,7 +20,9 @@ from module.TitleScreen import TitleScreen
 from module.WinScreen import WinScreen
 
 ERROR_PINK = (255, 0, 220)
-_RESTORE_PYGAME = pygame.USEREVENT + 10  # posted by tkinter thread when stats window closes
+_RESTORE_PYGAME = (
+    pygame.USEREVENT + 10
+)  # posted by tkinter thread when stats window closes
 
 
 class App:
