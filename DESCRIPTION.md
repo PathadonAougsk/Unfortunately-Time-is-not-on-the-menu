@@ -2,7 +2,9 @@
 
 ## 1 Project Overview
 - **Project** : Unfortunately Time is not on the menu
-- **Brief description** : A simple FNAF-inspired survival game. Fend off animatronics, each with their own distinct attack style, while racing to complete a minigame and reach a score of 100.
+
+- **Brief description** 
+A simple FNAF-inspired survival game. Fend off animatronics, each with their own distinct attack style, while racing to complete a minigame and reach a score of 100.
 
 - **Problem Statement** 
 This project doesn't address a specific problem. It's a lighthearted spin-off designed to offer a fresh take and break the monotony seen in recent FNAF entries.
@@ -11,10 +13,10 @@ This project doesn't address a specific problem. It's a lighthearted spin-off de
 Players who enjoy the horror genre, specifically those who are fans of FNAF.
 
 - **Key features**
-- Animatronics — multiple enemies, each with unique attack behaviors
-- Minigame — an interactive challenge players must complete to progress
-- Statistics system — tracks player performance and in game data
-- Dynamic difficulty — challenge scales as the players score increases
+Animatronics — multiple enemies, each with unique attack behaviors
+Minigame — an interactive challenge players must complete to progress
+Statistics system — tracks player performance and in game data
+Dynamic difficulty — challenge scales as the players score increases
 
 - **Screenshots:**
 ### Gameplay
@@ -32,7 +34,7 @@ Players who enjoy the horror genre, specifically those who are fans of FNAF.
 ![Success Rate Table](screenshots/visualization/success_rate_table.png)
 ![Input Burst by Interval](screenshots/visualization/input_burst_by_interval.png)
 
-- **Proposal:** [Project Proposal](./proposal.pdf)
+- **Proposal:** [Project Proposal](./Proposal.pdf)
 
 ## 2 Concept
 
@@ -49,140 +51,30 @@ This project inspired from fnaf1, fnaf2 and fnaf3 with some additional fan game.
 - Record meaningful gameplay statistics and present them through clear in game visualizations
 
 ## 3 UML Class diagram
-
-```mermaid
-classDiagram
-    class App {
-        +event_handler: EventHandler
-        +session: Session
-        +player: Player
-        +animatonic_controller: AnimatonicController
-        +office_controller: Office_controller
-        +Awake()
-        +Update()
-        +Quit()
-    }
-
-    class AnimatonicSystem {
-        +aggro_rate: float
-        #_aggro: float
-        #_state: int
-        #_frozen: bool
-        +try_to_move(score)
-        +freeze()
-        +unfreeze()
-        +behavior(state)*
-        +reset_game_over()
-    }
-
-    class MrTemp {
-        +name: str
-        +mode: str
-        +behavior(state)
-        +jumpscare()
-        +draw()
-    }
-
-    class MrBall {
-        +name: str
-        +mode: str
-        +behavior(state)
-        +jumpscare()
-        +draw()
-    }
-
-    class MrHappy {
-        +name: str
-        +mode: str
-        +behavior(state)
-        +interrupt()
-        +jumpscare()
-        +draw()
-    }
-
-    class AnimatonicController {
-        +animatonics: dict
-        +states: dict
-        +process()
-        +process_movement()
-        +process_behaviour()
-        +internal_process(event)
-        +reset_animatonic()
-    }
-
-    class EventHandler {
-        +is_mask_on: bool
-        +is_pc_on: bool
-        +is_door_close: bool
-        +score: int
-        +toggle_mask()
-        +toggle_door()
-        +toggle_pc()
-        +try_kill_player(name)
-        +gameover()
-    }
-
-    class Session {
-        -__df: DataFrame
-        +on_action(action_type)
-        +on_threat_prep(threat_name)
-        +on_attack(threat_name, survived, score)
-        +on_session_end(survived, score)
-        +write_to_excels()
-        +reset()
-    }
-
-    class Player {
-        +toggle_mask(state)
-        +render()
-    }
-
-    class StatisticWindow {
-        +df: DataFrame
-        +reaction_df: DataFrame
-        +open(on_close)
-        +line_plot(df)
-        +scatter_plot()
-        +bar_plot()
-        +table_plot(df)
-        +box_plot()
-    }
-
-    AnimatonicSystem <|-- MrTemp
-    AnimatonicSystem <|-- MrBall
-    AnimatonicSystem <|-- MrHappy
-    App *-- AnimatonicController
-    App *-- EventHandler
-    App *-- Session
-    App *-- Player
-    AnimatonicController o-- AnimatonicSystem
-    AnimatonicController --> EventHandler
-    Session --> EventHandler
-```
+![UML Pdf](./UML.pdf)
 
 ## 4 OOP Implementation
 
-### Inheritance
-All 3 animatronics inherit from `AnimatonicSystem` which handles all the shared stuff — aggro buildup, freeze logic, and animation playback. Each one overrides `behavior()` to do its own thing with its own attack style and defense.
-
-| Animatronic | Defense action | Attack condition |
-|-------------|---------------|-----------------|
-| MrTemp | Wear mask (`Space`) | Attacks if mask is **off** |
-| MrBall | Close the door | Attacks if door is **open** |
-| MrHappy | Turn off the PC | Attacks if PC is **on** |
-
-### Encapsulation
-- `Session` keeps the dataframe private so nothing touches it directly, everything goes through methods like `on_action()` or `on_attack()`
-- `EventHandler` keeps all the game state in one place and only lets things change through its own methods
-- `AnimatonicSystem` hides the event handler reference so animatronics can only trigger game over through `_gameover()`
-
-### Polymorphism
-`AnimatonicController` just calls `behavior()` on each animatronic without caring what type it is. Each one does something different — MrBall preps from the corner, MrHappy slides in through the PC screen, MrTemp creeps in from the side — but the controller treats them all the same.
-
-### Composition
-- `App` is basically a container that creates and holds everything — `EventHandler`, `Session`, `Player`, `AnimatonicController`, all the screens
-- `MiniGame` uses `MiniGameLogic` to handle all the actual minigame logic separately from the rendering
-- `StatisticWindow` uses a shared `_TkHost` to run the Tkinter window on its own thread
+ `App` -> Main entry point. Creates and runs all subsystems in the game loop
+ `AnimatonicSystem` -> Base class for all animatronics. Handles aggro buildup, freeze logic, and animation
+`MrTemp` -> Animatronic that attacks from the office side. Countered by wearing the mask
+`MrBall` -> Animatronic that rolls in from the corner. Countered by closing the door
+`MrHappy` -> Animatronic that appears through the PC screen. Countered by turning the PC off
+`AnimatonicController` -> Manages all animatronics, handles movement timing, cooldowns, and attack events
+`EventHandler` -> Holds all game state — mask, door, PC, score, facing direction
+`Session` -> Records every player action and encounter into a dataframe and writes to `Data.xlsx`
+`Player` -> Handles the mask visual on the player
+`MiniGame` -> Renders the minigame surface and passes input to `MiniGameLogic`
+`MiniGameLogic` -> Handles the actual minigame logic — scoring, timing, and feedback
+`Office_controller` -> Manages the office and backroom rendering and state
+`StatisticWindow` -> Tkinter window that generates and displays all 5 data visualizations
+`StatisticScreen` -> In-game pygame overlay version of the stats display
+`Animation` -> Loads and plays sprite sheet animations
+`TitleScreen` -> Handles the main menu including volume sliders and navigation
+`GameOverScreen` -> Handles the game over screen and retry/menu options
+`WinScreen` -> Handles the win screen and play again/menu options
+`StaticOverlay` -> Draws the static noise effect over the screen
+`DebugOverlay` -> Shows debug info like animatronic states when F3 is pressed
 
 ## 5 Statistical Data
 
@@ -211,3 +103,14 @@ Both the `StatisticWindow` (Tkinter) and the in-game `StatisticScreen` generate 
 | **Input Burst by Time Interval** | Box plot | How many inputs the player made grouped by how fast they were pressing buttons |
 
 The stats window also lets you filter by animatronic so you can look at one threat at a time.
+
+## 6 External Sources
+
+### Sound Effects
+All sound effects are from Pixabay under the [Pixabay Content License](https://pixabay.com/service/license-summary/) which allows free use without attribution.
+
+- Sound Effect by [DRAGON-STUDIO](https://pixabay.com/users/dragon-studio-38165424/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=401729) from [Pixabay](https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=401729) — used for MrTemp's appear sound
+- Sound Effect by [DRAGON-STUDIO](https://pixabay.com/users/dragon-studio-38165424/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=397987) from [Pixabay](https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=397987) — used for MrBall's appear sound
+
+### Art
+All sprites, animations, and backgrounds are original work by the author.

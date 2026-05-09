@@ -3,14 +3,14 @@ import sys
 import pygame
 from pygame._sdl2 import video as _sdl2_video
 
-from module.Animatonics.Controller import AnimatonicController
+from module.Animatonics.AnimatonicControl import AnimatonicController
 from module.Animatonics.MrBall import MrBall
 from module.Animatonics.MrHappy import MrHappy
 from module.Animatonics.MrTemp import MrTemp
 from module.DebugOverlay import DebugOverlay
 from module.EventHandler import EventHandler
 from module.GameOverScreen import GameOverScreen
-from module.Office.Controller import Office_controller
+from module.Office.OfficeController import Office_controller
 from module.Player import Player
 from module.Recording import Session
 from module.StaticOverlay import StaticOverlay

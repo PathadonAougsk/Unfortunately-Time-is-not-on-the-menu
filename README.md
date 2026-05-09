@@ -73,12 +73,6 @@ This happens because the AI updates before the player input is processed, so cli
 
 ---
 
-## Unfinished Works
-
-*Your content here (in case you finish all of your tasks, please identify)*
-
----
-
 ## External Sources
 
 ### Sound Effects
