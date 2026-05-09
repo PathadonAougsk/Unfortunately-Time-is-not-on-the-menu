@@ -50,7 +50,25 @@ python3 main.py
 
 ## Tutorial / Usage
 
-*Your content here*
+**Goal:** Reach 100 points by completing the minigame.
+
+**Minigame:**
+- Click **Accept** when the screen says to accept an order
+- Do **not** click when the screen says to reject
+
+**Controls:**
+| Action | How |
+|---|---|
+| Change to PC Room | Swipe Left (hover left edge) |
+| Go Back to Office | Swipe Right (hover right edge) |
+| Wear a Mask | Press **Space** |
+| Close the Door | Click the door button |
+| Toggle PC | Click the PC button |
+
+**Threats to watch for:**
+- Hear a **cat sound** → close the door
+- Hear a **footstep** → wear a mask
+- See something in the **center of the PC screen** → close the PC
 
 ---
 
