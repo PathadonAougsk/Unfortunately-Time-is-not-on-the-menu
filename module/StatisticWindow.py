@@ -67,6 +67,7 @@ class StatisticWindow:
         self._active_filters: set[str] = set()
         self._has_data = False
         self._loading = False
+        self._closed = True  # True until _build_window runs
         self.df: pd.DataFrame | None = None
         self.reaction_df: pd.DataFrame | None = None
         self._photo_ref = None  # keep ImageTk ref alive
@@ -87,6 +88,7 @@ class StatisticWindow:
         _TkHost.get().call(self._build_window)
 
     def _close(self) -> None:
+        self._closed = True
         if self._on_close is not None:
             self._on_close()
         self.root.destroy()
@@ -94,6 +96,7 @@ class StatisticWindow:
     def _build_window(self) -> None:
         """Called on the Tk thread — creates a fresh Toplevel each time."""
         host = _TkHost.get()
+        self._closed = False
         self.root = tk.Toplevel(host.root)
         self.root.title("Statistics — Till 6 AM")
         self.root.configure(bg=BG)
@@ -284,7 +287,11 @@ class StatisticWindow:
         filtered = self._filtered_reaction_df()
         self.line_plot(filtered)
         self.table_plot(filtered)
-        self.root.after(0, self._update_graph_display)
+        if not self._closed:
+            try:
+                self.root.after(0, self._update_graph_display)
+            except tk.TclError:
+                pass
 
     # ------------------------------------------------------------------
     # Graph display
@@ -293,18 +300,26 @@ class StatisticWindow:
     def _bg_generate_all(self) -> None:
         self._generate_all()
         self._loading = False
-        self.root.after(0, self._on_graphs_ready)
+        if not self._closed:
+            try:
+                self.root.after(0, self._on_graphs_ready)
+            except tk.TclError:
+                pass
 
     def _on_graphs_ready(self) -> None:
+        if self._closed:
+            return
         self._set_status("")
         self._status_label.pack_forget()
         self._update_graph_display()
 
     def _set_status(self, msg: str) -> None:
+        if self._closed:
+            return
         self._status_var.set(msg)
 
     def _update_graph_display(self) -> None:
-        if not self._has_data:
+        if self._closed or not self._has_data:
             return
         key = _GRAPH_KEYS[self._index]
         path = self._graphs_dir / f"{key}.png"
@@ -557,6 +572,7 @@ class StatisticWindow:
         )
         ax.set_xlabel("Time Between Inputs (seconds)", fontsize=11)
         ax.set_ylabel("Input Count", fontsize=11)
+        ax.set_xticks(range(5))
         ax.set_xticklabels(["0–1s", "1–2s", "2–3s", "3–4s", "4–5s"], fontsize=10)
         ax.grid(axis="y", linestyle="--", alpha=0.5)
         ax.set_axisbelow(True)
