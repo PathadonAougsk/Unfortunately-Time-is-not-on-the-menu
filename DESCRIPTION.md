@@ -57,26 +57,26 @@ This project inspired from fnaf1, fnaf2 and fnaf3 with some additional fan game.
 
 ## 4 OOP Implementation
 
- `App` -> Main entry point. Creates and runs all subsystems in the game loop
- `AnimatonicSystem` -> Base class for all animatronics. Handles aggro buildup, freeze logic, and animation
-`MrTemp` -> Animatronic that attacks from the office side. Countered by wearing the mask
-`MrBall` -> Animatronic that rolls in from the corner. Countered by closing the door
-`MrHappy` -> Animatronic that appears through the PC screen. Countered by turning the PC off
-`AnimatonicController` -> Manages all animatronics, handles movement timing, cooldowns, and attack events
-`EventHandler` -> Holds all game state — mask, door, PC, score, facing direction
-`Session` -> Records every player action and encounter into a dataframe and writes to `Data.xlsx`
-`Player` -> Handles the mask visual on the player
-`MiniGame` -> Renders the minigame surface and passes input to `MiniGameLogic`
-`MiniGameLogic` -> Handles the actual minigame logic — scoring, timing, and feedback
-`Office_controller` -> Manages the office and backroom rendering and state
-`StatisticWindow` -> Tkinter window that generates and displays all 5 data visualizations
-`StatisticScreen` -> In-game pygame overlay version of the stats display
-`Animation` -> Loads and plays sprite sheet animations
-`TitleScreen` -> Handles the main menu including volume sliders and navigation
-`GameOverScreen` -> Handles the game over screen and retry/menu options
-`WinScreen` -> Handles the win screen and play again/menu options
-`StaticOverlay` -> Draws the static noise effect over the screen
-`DebugOverlay` -> Shows debug info like animatronic states when F3 is pressed
+`App` -> Main entry point. Creates and runs all subsystems in the game loop \
+`AnimatonicSystem` -> Base class for all animatronics. Handles aggro buildup, freeze logic, and animation \
+`MrTemp` -> Animatronic that attacks from the office side. Countered by wearing the mask \
+`MrBall` -> Animatronic that rolls in from the corner. Countered by closing the door \
+`MrHappy` -> Animatronic that appears through the PC screen. Countered by turning the PC off \
+`AnimatonicController` -> Manages all animatronics, handles movement timing, cooldowns, and attack events \
+`EventHandler` -> Holds all game state — mask, door, PC, score, facing direction \
+`Session` -> Records every player action and encounter into a dataframe and writes to `Data.xlsx` \
+`Player` -> Handles the mask visual on the player \
+`MiniGame` -> Renders the minigame surface and passes input to `MiniGameLogic` \
+`MiniGameLogic` -> Handles the actual minigame logic — scoring, timing, and feedback \
+`Office_controller` -> Manages the office and backroom rendering and state \
+`StatisticWindow` -> Tkinter window that generates and displays all 5 data visualizations \
+`StatisticScreen` -> In-game pygame overlay version of the stats display \
+`Animation` -> Loads and plays sprite sheet animations \
+`TitleScreen` -> Handles the main menu including volume sliders and navigation \
+`GameOverScreen` -> Handles the game over screen and retry/menu options \
+`WinScreen` -> Handles the win screen and play again/menu options \
+`StaticOverlay` -> Draws the static noise effect over the screen \
+`DebugOverlay` -> Shows debug info like animatronic states when F3 is pressed \
 
 ## 5 Statistical Data
 
