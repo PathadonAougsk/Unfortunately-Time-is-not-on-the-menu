@@ -70,6 +70,7 @@ class TitleScreen:
         self.volumes = {name: 1.0 for name in SLIDER_CHARS}
         self._slider_bars: dict[str, pygame.Rect] = {}
         self._dragging: str | None = None
+        self._clicks_blocked = False
         self._preview_sounds: dict[str, pygame.mixer.Sound] = (
             self._load_preview_sounds()
         )
@@ -81,6 +82,8 @@ class TitleScreen:
         if self._phase == "attract":
             if event.type in (pygame.KEYDOWN, pygame.MOUSEBUTTONDOWN):
                 self._phase = "menu"
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self._clicks_blocked = True
 
         elif self._phase == "menu":
             if event.type == pygame.KEYDOWN:
@@ -92,16 +95,18 @@ class TitleScreen:
                     self._confirm()
 
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                hit_slider = self._try_grab_slider(event.pos)
-                if not hit_slider:
-                    for i, rect in enumerate(self._menu_rects):
-                        if rect.collidepoint(event.pos):
-                            self._sel_index = i
-                            self._confirm()
-                            break
+                if not self._clicks_blocked:
+                    hit_slider = self._try_grab_slider(event.pos)
+                    if not hit_slider:
+                        for i, rect in enumerate(self._menu_rects):
+                            if rect.collidepoint(event.pos):
+                                self._sel_index = i
+                                self._confirm()
+                                break
 
             elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 self._dragging = None
+                self._clicks_blocked = False
 
             elif event.type == pygame.MOUSEMOTION:
                 if self._dragging:

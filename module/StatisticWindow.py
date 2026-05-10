@@ -23,6 +23,7 @@ class _TkHost:
     def _loop(self) -> None:
         self.root = tk.Tk()
         self.root.withdraw()  # keep it hidden; windows open as Toplevel children
+        self.root.protocol("WM_DELETE_WINDOW", lambda: None)  # prevent accidental destruction
         self._ready.set()
         self.root.mainloop()
 

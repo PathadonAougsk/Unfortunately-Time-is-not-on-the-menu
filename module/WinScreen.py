@@ -51,6 +51,7 @@ class WinScreen:
         self._blink_on = True
         self._menu_alpha = 0
         self._menu_rects: list[pygame.Rect] = []
+        self._clicks_blocked = False
 
         self._title_y = -int(sh * 0.25)
         self._title_target = int(sh * 0.18)
@@ -79,6 +80,7 @@ class WinScreen:
         self._menu_alpha = 0
         self._title_y = -int(self.sh * 0.25)
         self._title_vel = 0.0
+        self._clicks_blocked = False
 
     def handle_event(self, event: pygame.event.Event) -> None:
         if self.done:
@@ -87,6 +89,8 @@ class WinScreen:
         if self._phase == "attract":
             if event.type in (pygame.KEYDOWN, pygame.MOUSEBUTTONDOWN):
                 self._phase = "menu"
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self._clicks_blocked = True
 
         elif self._phase == "menu":
             if event.type == pygame.KEYDOWN:
@@ -97,12 +101,16 @@ class WinScreen:
                 elif event.key in (pygame.K_RETURN, pygame.K_SPACE):
                     self._confirm()
 
+            elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                self._clicks_blocked = False
+
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                for i, rect in enumerate(self._menu_rects):
-                    if rect.collidepoint(event.pos):
-                        self._sel_index = i
-                        self._confirm()
-                        break
+                if not self._clicks_blocked:
+                    for i, rect in enumerate(self._menu_rects):
+                        if rect.collidepoint(event.pos):
+                            self._sel_index = i
+                            self._confirm()
+                            break
 
             elif event.type == pygame.MOUSEMOTION:
                 for i, rect in enumerate(self._menu_rects):
