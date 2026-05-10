@@ -88,7 +88,6 @@ python3 main.py
 
 - Sometimes MrBall will kill the player even if the door is closed.
 This happens because the AI updates before the player input is processed, so clicking the door on the last frame still counts as open when the attack check runs.
-- Tkinter / statistic part will shutdown the whole program after the user close it (On Window, Untest with mac, Work perfectly fine in linux).
 
 ---
 
