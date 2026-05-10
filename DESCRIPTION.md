@@ -20,12 +20,12 @@ Dynamic difficulty — challenge scales as the players score increases
 
 - **Screenshots:**
 ### Gameplay
-![Menu](screenshots/gameplays/Menu.png)
-![Office](screenshots/gameplays/Office.png)
-![Minigame](screenshots/gameplays/MiniGame.png)
-![Enounter](screenshots/gameplays/Encounter.png)
-![GameOver](screenshots/gameplays/GameOver.png)
-![Survived](screenshots/gameplays/Survived.png)
+![Menu](screenshots/gameplay/Menu.png)
+![Office](screenshots/gameplay/Office.png)
+![Minigame](screenshots/gameplay/MiniGame.png)
+![Encounter](screenshots/gameplay/Encounter.png)
+![GameOver](screenshots/gameplay/GameOver.png)
+![Survived](screenshots/gameplay/Survived.png)
 
 ### Data Visualization
 ![Reaction Time vs Score](screenshots/visualization/reaction_time_vs_score.png)
@@ -35,6 +35,8 @@ Dynamic difficulty — challenge scales as the players score increases
 ![Input Burst by Interval](screenshots/visualization/input_burst_by_interval.png)
 
 - **Proposal:** [Project Proposal](./Proposal.pdf)
+
+- **YouTube Presentation:** [Watch on YouTube](https://www.youtube.com/watch?v=pUN-Kja2mV8)
 
 ## 2 Concept
 
@@ -50,8 +52,8 @@ This project inspired from fnaf1, fnaf2 and fnaf3 with some additional fan game.
 - Make it fun for even for replaying
 - Record meaningful gameplay statistics and present them through clear in game visualizations
 
-## 3 UML Class diagram
-![UML Pdf](./UML.pdf)
+## 3 UML Class Diagram
+[UML Class Diagram](./UML.pdf)
 
 ## 4 OOP Implementation
 
@@ -104,7 +106,11 @@ Both the `StatisticWindow` (Tkinter) and the in-game `StatisticScreen` generate 
 
 The stats window also lets you filter by animatronic so you can look at one threat at a time.
 
-## 6 External Sources
+## 6 Changed Proposed Features
+
+No major changes from the original proposal.
+
+## 7 External Sources
 
 ### Sound Effects
 All sound effects are from Pixabay under the [Pixabay Content License](https://pixabay.com/service/license-summary/) which allows free use without attribution.
